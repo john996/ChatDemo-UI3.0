@@ -2790,6 +2790,7 @@
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/../EaseMobSDK/include/**",
+					"./framework/Source/**",
 				);
 				INFOPLIST_FILE = "ChatDemo-UI3.0/ChatDemo-UI3.0-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
@@ -2836,6 +2837,7 @@
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/../EaseMobSDK/include/**",
+					"./framework/Source/**",
 				);
 				INFOPLIST_FILE = "ChatDemo-UI3.0/ChatDemo-UI3.0-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 6.0;

@@ -13,6 +13,7 @@
 #import <AVFoundation/AVFoundation.h>
 #import <CoreTelephony/CTCallCenter.h>
 #import <UIKit/UIKit.h>
+#import "GPUImage.h"
 
 static CTCallCenter *g_callCenter;
 
