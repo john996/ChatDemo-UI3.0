@@ -52,15 +52,17 @@ static CTCallCenter *g_callCenter;
     UITapGestureRecognizer *_tapRecognizer;
     
     UInt8 *_imageDataBuffer;
+    UInt8 *_imageAfterDataBuffer;
     
     GPUImageVideoCamera* _videoCamera;
     GPUImageView* _gpuView;
+    GPUImageRawDataOutput* _gpuImageDataOutput;
     GPUImageOutput<GPUImageInput>* _filter;
     UIImageView* _maImage;
     BOOL _isModify;
     
 }
-
+@property(strong, nonatomic) GPUImageRawDataOutput* gpuImageDataOutput;
 @property (strong, nonatomic) NSString *chatter;
 @property (strong, nonatomic) UILabel *statusLabel;
 @property (strong, nonatomic) UITapGestureRecognizer *tapRecognizer;
