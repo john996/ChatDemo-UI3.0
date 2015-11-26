@@ -83,6 +83,7 @@
 		90F1BECF1930492B00121AEC /* AddressBook.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 90F1BECE1930492B00121AEC /* AddressBook.framework */; };
 		90F1BED11930493200121AEC /* libiconv.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 90F1BED01930493100121AEC /* libiconv.dylib */; };
 		90F1BED51930495800121AEC /* MobileCoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 90F1BED41930495800121AEC /* MobileCoreServices.framework */; };
+		BB4EA05B1C06C9FF000637C0 /* cover@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = BB4EA05A1C06C9FF000637C0 /* cover@2x.png */; settings = {ASSET_TAGS = (); }; };
 		BBF98D671C040129004074C5 /* CoreMedia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BBF98D661C040129004074C5 /* CoreMedia.framework */; };
 		BBF98D691C040142004074C5 /* CoreVideo.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BBF98D681C040142004074C5 /* CoreVideo.framework */; };
 		BBF98D6B1C040150004074C5 /* OpenGLES.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BBF98D6A1C040150004074C5 /* OpenGLES.framework */; };
@@ -477,6 +478,7 @@
 		90F1BED01930493100121AEC /* libiconv.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libiconv.dylib; path = usr/lib/libiconv.dylib; sourceTree = SDKROOT; };
 		90F1BED21930493F00121AEC /* libstdc++.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libstdc++.dylib"; path = "usr/lib/libstdc++.dylib"; sourceTree = SDKROOT; };
 		90F1BED41930495800121AEC /* MobileCoreServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MobileCoreServices.framework; path = System/Library/Frameworks/MobileCoreServices.framework; sourceTree = SDKROOT; };
+		BB4EA05A1C06C9FF000637C0 /* cover@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cover@2x.png"; sourceTree = "<group>"; };
 		BBF98D661C040129004074C5 /* CoreMedia.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMedia.framework; path = System/Library/Frameworks/CoreMedia.framework; sourceTree = SDKROOT; };
 		BBF98D681C040142004074C5 /* CoreVideo.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreVideo.framework; path = System/Library/Frameworks/CoreVideo.framework; sourceTree = SDKROOT; };
 		BBF98D6A1C040150004074C5 /* OpenGLES.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGLES.framework; path = System/Library/Frameworks/OpenGLES.framework; sourceTree = SDKROOT; };
@@ -1991,6 +1993,7 @@
 		EBD2AA341A7CDABF00D16528 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				BB4EA05A1C06C9FF000637C0 /* cover@2x.png */,
 				BBF98D851C04AB91004074C5 /* masaike@2x.png */,
 				EBD2AA351A7CDABF00D16528 /* appicon */,
 				EBD2AA3C1A7CDABF00D16528 /* chatListCell */,
@@ -2526,6 +2529,7 @@
 				EBD2AB871A7CDAC000D16528 /* chat_receiver_audio_playing001@2x.png in Resources */,
 				EBD2AB7D1A7CDAC000D16528 /* chatBar_more_locationSelected.png in Resources */,
 				EBD2AB9A1A7CDAC000D16528 /* chat_sender_bg.png in Resources */,
+				BB4EA05B1C06C9FF000637C0 /* cover@2x.png in Resources */,
 				EBD2ABAF1A7CDAC000D16528 /* tabbar_chatsHL.png in Resources */,
 				EBD2AB7B1A7CDAC000D16528 /* chatBar_more_location.png in Resources */,
 				9091103A192EEA70008A48AA /* Images.xcassets in Resources */,

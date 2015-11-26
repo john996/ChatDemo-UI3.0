@@ -272,6 +272,13 @@
     _openGLView.backgroundColor = [UIColor clearColor];
     _openGLView.sessionPreset = AVCaptureSessionPreset640x480;
     [self.view addSubview:_openGLView];
+    
+    _maImage = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height)];
+    [_maImage setImage:[UIImage imageNamed:@"cover.png"]];
+    _maImage.alpha = 0.6;
+    _maImage.hidden = YES;
+    
+    [self.view addSubview:_maImage];
 
     
     //2.小窗口视图
@@ -283,11 +290,7 @@
 //    _smallView.backgroundColor = [UIColor clearColor];
 //    [self.view addSubview:_smallView];
 //    
-//    _maImage = [[UIImageView alloc] initWithFrame:CGRectMake(self.view.frame.size.width - 90, CGRectGetMaxY(_statusLabel.frame), width, height)];
-//    [_maImage setImage:[UIImage imageNamed:@"masaike.png"]];
-//    _maImage.alpha = 0.9;
-//    
-//    [self.view addSubview:_maImage];
+ 
     
     _gpuView = [[GPUImageView alloc] initWithFrame:CGRectMake(self.view.frame.size.width - 155, CGRectGetMaxY(_statusLabel.frame), width, 200)];
     [self.view addSubview:_gpuView];
@@ -301,6 +304,8 @@
     [_videoCamera addTarget:_filter];
     GPUImageView *filterView = (GPUImageView *)_gpuView;
     [_filter addTarget:filterView];
+    
+
    
     
     //3.创建会话层
@@ -423,17 +428,23 @@
 }
 
 -(void)willOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer{
+   
+    //CGImageRef imageRef = [_filter.framebufferForOutput newCGImageFromFramebufferContents];
+   // UIImage* testImg = [UIImage imageWithCGImage:imageRef];
     if (_callSession.status != eCallSessionStatusAccepted) {
         return;
     }
     
+  
     CVImageBufferRef imageBuffer = CMSampleBufferGetImageBuffer(sampleBuffer);
     
     
    
     
-    //CGImageRef imageRef = [_videoCamera.framebufferForOutput newCGImageFromFramebufferContents];
-    //CVImageBufferRef imageBuffer = [self pixelBufferFromCGImage:imageRef];
+  
+    //[self.view addSubview:iView];
+   
+   // CVImageBufferRef imageBuffer = [self pixelBufferFromCGImage:imageRef];
     if(CVPixelBufferLockBaseAddress(imageBuffer, 0) == kCVReturnSuccess)
     {
 ////         UInt8 *bufferPtr = (UInt8 *)CVPixelBufferGetBaseAddressOfPlane(imageBuffer, 0);
@@ -443,54 +454,58 @@
         
         
      
-        
+         //UInt8 *bufferPtr = (UInt8 *)CVPixelBufferGetBaseAddressOfPlane(_videoCamera.framebufferForOutput.byteBuffer, 0);
                 //UInt8 *bufferbasePtr = (UInt8 *)CVPixelBufferGetBaseAddress(imageBuffer);
         UInt8 *bufferPtr = (UInt8 *)CVPixelBufferGetBaseAddressOfPlane(imageBuffer, 0);
         
-        UInt8 *bufferPtr1 = (UInt8 *)CVPixelBufferGetBaseAddressOfPlane(imageBuffer, 1);
-              // NSLog(@"addr diff1:%d,diff2:%d\n",bufferPtr-bufferbasePtr,bufferPtr1-bufferPtr);
-        
-        //        size_t buffeSize = CVPixelBufferGetDataSize(imageBuffer);
-        size_t width = CVPixelBufferGetWidth(imageBuffer);
-        size_t height = CVPixelBufferGetHeight(imageBuffer);
-        //        size_t bytesPerRow = CVPixelBufferGetBytesPerRow(imageBuffer);
-        size_t bytesrow0 = CVPixelBufferGetBytesPerRowOfPlane(imageBuffer, 0);
-        size_t bytesrow1  = CVPixelBufferGetBytesPerRowOfPlane(imageBuffer, 1);
-        //        size_t bytesrow2 = CVPixelBufferGetBytesPerRowOfPlane(imageBuffer, 2);
-        //        printf("buffeSize:%d,width:%d,height:%d,bytesPerRow:%d,bytesrow0 :%d,bytesrow1 :%d,bytesrow2 :%d\n",buffeSize,width,height,bytesPerRow,bytesrow0,bytesrow1,bytesrow2);
-        
-        if (_imageDataBuffer == nil) {
-            _imageDataBuffer = (UInt8 *)malloc(width * height * 3 / 2);
-        }
-        UInt8 *pY = bufferPtr;
-        UInt8 *pUV = bufferPtr1;
-        UInt8 *pU = _imageDataBuffer + width * height;
-        UInt8 *pV = pU + width * height / 4;
-        for(int i =0; i < height; i++)
-        {
-            memcpy(_imageDataBuffer + i * width, pY + i * bytesrow0, width);
-        }
-        
-        for(int j = 0; j < height / 2; j++)
-        {
-            for(int i = 0; i < width / 2; i++)
-            {
-                *(pU++) = pUV[i<<1];
-                *(pV++) = pUV[(i<<1) + 1];
+            UInt8 *bufferPtr1 = (UInt8 *)CVPixelBufferGetBaseAddressOfPlane(imageBuffer, 1);
+        if (bufferPtr) {
+            // NSLog(@"addr diff1:%d,diff2:%d\n",bufferPtr-bufferbasePtr,bufferPtr1-bufferPtr);
+            
+            //        size_t buffeSize = CVPixelBufferGetDataSize(imageBuffer);
+            size_t width = CVPixelBufferGetWidth(imageBuffer);
+            size_t height = CVPixelBufferGetHeight(imageBuffer);
+            //        size_t bytesPerRow = CVPixelBufferGetBytesPerRow(imageBuffer);
+            size_t bytesrow0 = CVPixelBufferGetBytesPerRowOfPlane(imageBuffer, 0);
+            size_t bytesrow1  = CVPixelBufferGetBytesPerRowOfPlane(imageBuffer, 1);
+            //        size_t bytesrow2 = CVPixelBufferGetBytesPerRowOfPlane(imageBuffer, 2);
+            //        printf("buffeSize:%d,width:%d,height:%d,bytesPerRow:%d,bytesrow0 :%d,bytesrow1 :%d,bytesrow2 :%d\n",buffeSize,width,height,bytesPerRow,bytesrow0,bytesrow1,bytesrow2);
+            
+            if (_imageDataBuffer == nil) {
+                _imageDataBuffer = (UInt8 *)malloc(width * height * 3 / 2);
             }
-            pUV += bytesrow1;
+            UInt8 *pY = bufferPtr;
+            UInt8 *pUV = bufferPtr1;
+            UInt8 *pU = _imageDataBuffer + width * height;
+            UInt8 *pV = pU + width * height / 4;
+            for(int i =0; i < height; i++)
+            {
+                memcpy(_imageDataBuffer + i * width, pY + i * bytesrow0, width);
+            }
+            
+            for(int j = 0; j < height / 2; j++)
+            {
+                for(int i = 0; i < width / 2; i++)
+                {
+                    *(pU++) = pUV[i<<1];
+                    *(pV++) = pUV[(i<<1) + 1];
+                }
+                pUV += bytesrow1;
+            }
+            
+            YUV420spRotate90(bufferPtr, _imageDataBuffer, width, height);
+            
+            
+            //[[EaseMob sharedInstance].callManager processPreviewData:(char*)_videoCamera.framebufferForOutput.byteBuffer width:width height:height];
+            
+            
+            
+            [[EaseMob sharedInstance].callManager processPreviewData: (char*)bufferPtr width:width height:height];
+            CVPixelBufferUnlockBaseAddress(imageBuffer, 0);
+
         }
         
-        YUV420spRotate90(bufferPtr, _imageDataBuffer, width, height);
-        
-        
-        //[[EaseMob sharedInstance].callManager processPreviewData:(char*)_videoCamera.framebufferForOutput.byteBuffer width:width height:height];
-        
-        
-        
-        [[EaseMob sharedInstance].callManager processPreviewData: (char*)bufferPtr width:width height:height];
-        CVPixelBufferUnlockBaseAddress(imageBuffer, 0);
-    }
+            }
 }
 
 #pragma mark - ring
@@ -764,6 +779,7 @@ didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
         [_actionView addSubview:_speakerOutButton];
         [_actionView addSubview:_speakerOutLabel];
         
+        _maImage.hidden = NO;
         if ([self isShowCallInfo]) {
             [self _reloadPropertyData];
             _propertyTimer = [NSTimer scheduledTimerWithTimeInterval:2.0 target:self selector:@selector(_reloadPropertyData) userInfo:nil repeats:YES];
