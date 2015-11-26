@@ -17,7 +17,7 @@
 
 static CTCallCenter *g_callCenter;
 
-@interface CallViewController : UIViewController<UIAlertViewDelegate, EMCallManagerDelegate, AVCaptureVideoDataOutputSampleBufferDelegate>
+@interface CallViewController : UIViewController<UIAlertViewDelegate, EMCallManagerDelegate, AVCaptureVideoDataOutputSampleBufferDelegate, GPUImageVideoCameraDelegate>
 {
     NSTimer *_timeTimer;
     AVAudioPlayer *_ringPlayer;
@@ -52,6 +52,13 @@ static CTCallCenter *g_callCenter;
     UITapGestureRecognizer *_tapRecognizer;
     
     UInt8 *_imageDataBuffer;
+    
+    GPUImageVideoCamera* _videoCamera;
+    GPUImageView* _gpuView;
+    GPUImageOutput<GPUImageInput>* _filter;
+    UIImageView* _maImage;
+    BOOL _isModify;
+    
 }
 
 @property (strong, nonatomic) NSString *chatter;

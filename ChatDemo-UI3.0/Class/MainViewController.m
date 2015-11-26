@@ -263,7 +263,7 @@ static NSString *kGroupName = @"GroupName";
         if (![self canRecord]) {
             return;
         }
-        
+            [AVCaptureDevice requestAccessForMediaType:AVMediaTypeVideo completionHandler:^(BOOL granted){}];
         EMError *error = nil;
         NSString *chatter = [object objectForKey:@"chatter"];
         EMCallSessionType type = [[object objectForKey:@"type"] intValue];

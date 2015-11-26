@@ -76,12 +76,15 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     
+    _isModify = NO;
+    
     [self _setupSubviews];
     
     _nameLabel.text = _chatter;
     if (_callSession.type == eCallSessionTypeVideo) {
         [self _initializeCamera];
-        [_session startRunning];
+       // [_session startRunning];
+         [_videoCamera startCameraCapture];
         [self.view addGestureRecognizer:self.tapRecognizer];
         [self.view bringSubviewToFront:_topView];
         [self.view bringSubviewToFront:_actionView];
@@ -267,61 +270,89 @@
     //1.大窗口显示层
     _openGLView = [[OpenGLView20 alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height)];
     _openGLView.backgroundColor = [UIColor clearColor];
-    _openGLView.sessionPreset = AVCaptureSessionPreset352x288;
+    _openGLView.sessionPreset = AVCaptureSessionPreset640x480;
     [self.view addSubview:_openGLView];
+
     
     //2.小窗口视图
-    CGFloat width = 80;
+    CGFloat width = 150;
     CGFloat height = _openGLView.frame.size.height / _openGLView.frame.size.width * width;
-    _smallView = [[UIView alloc] initWithFrame:CGRectMake(self.view.frame.size.width - 90, CGRectGetMaxY(_statusLabel.frame), width, height)];
-    _smallView.backgroundColor = [UIColor clearColor];
-    [self.view addSubview:_smallView];
+    
+    
+//    _smallView = [[UIView alloc] initWithFrame:CGRectMake(self.view.frame.size.width - 90, CGRectGetMaxY(_statusLabel.frame), width, height)];
+//    _smallView.backgroundColor = [UIColor clearColor];
+//    [self.view addSubview:_smallView];
+//    
+//    _maImage = [[UIImageView alloc] initWithFrame:CGRectMake(self.view.frame.size.width - 90, CGRectGetMaxY(_statusLabel.frame), width, height)];
+//    [_maImage setImage:[UIImage imageNamed:@"masaike.png"]];
+//    _maImage.alpha = 0.9;
+//    
+//    [self.view addSubview:_maImage];
+    
+    _gpuView = [[GPUImageView alloc] initWithFrame:CGRectMake(self.view.frame.size.width - 155, CGRectGetMaxY(_statusLabel.frame), width, 200)];
+    [self.view addSubview:_gpuView];
+    
+     _videoCamera = [[GPUImageVideoCamera alloc] initWithSessionPreset:AVCaptureSessionPreset640x480 cameraPosition:AVCaptureDevicePositionFront];
+    _videoCamera.outputImageOrientation = UIInterfaceOrientationPortrait;
+    _videoCamera.horizontallyMirrorFrontFacingCamera = NO;
+    _videoCamera.horizontallyMirrorRearFacingCamera = NO;
+    _videoCamera.delegate = self;
+    _filter = [[GPUImagePixellateFilter alloc] init];
+    [_videoCamera addTarget:_filter];
+    GPUImageView *filterView = (GPUImageView *)_gpuView;
+    [_filter addTarget:filterView];
+   
     
     //3.创建会话层
-    _session = [[AVCaptureSession alloc] init];
-    [_session setSessionPreset:_openGLView.sessionPreset];
+//    _session = [[AVCaptureSession alloc] init];
+//    [_session setSessionPreset:_openGLView.sessionPreset];
     
+    _session = _videoCamera.captureSession;
+    [_videoCamera setCaptureSessionPreset:_openGLView.sessionPreset];
+    //[_session setSessionPreset:_openGLView.sessionPreset];
+
     //4.创建、配置输入设备
-    AVCaptureDevice *device;
-    NSArray *devices = [AVCaptureDevice devicesWithMediaType:AVMediaTypeVideo];
-    for (AVCaptureDevice *tmp in devices)
-    {
-        if (tmp.position == AVCaptureDevicePositionFront)
-        {
-            device = tmp;
-            break;
-        }
-    }
-    
-    NSError *error = nil;
-    _captureInput = [AVCaptureDeviceInput deviceInputWithDevice:device error:&error];
-    [_session beginConfiguration];
-    if(!error){
-        [_session addInput:_captureInput];
-    }
-    else{
-        UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"error", @"Error") message:error.localizedFailureReason delegate:nil cancelButtonTitle:NSLocalizedString(@"ok", @"OK") otherButtonTitles:nil, nil];
-        [alertView show];
-    }
-    
-    //5.创建、配置输出
-    _captureOutput = [[AVCaptureVideoDataOutput alloc] init];
-    _captureOutput.videoSettings = _openGLView.outputSettings;
-//    [[_captureOutput connectionWithMediaType:AVMediaTypeVideo] setVideoMinFrameDuration:CMTimeMake(1, 15)];
-    _captureOutput.minFrameDuration = CMTimeMake(1, 15);
-//    _captureOutput.minFrameDuration = _openGLView.videoMinFrameDuration;
-    _captureOutput.alwaysDiscardsLateVideoFrames = YES;
-    dispatch_queue_t outQueue = dispatch_queue_create("com.gh.cecall", NULL);
-    [_captureOutput setSampleBufferDelegate:self queue:outQueue];
-    [_session addOutput:_captureOutput];
-    [_session commitConfiguration];
-    
-    //6.小窗口显示层
-    _smallCaptureLayer = [AVCaptureVideoPreviewLayer layerWithSession:_session];
-    _smallCaptureLayer.frame = CGRectMake(0, 0, width, height);
-    _smallCaptureLayer.videoGravity = AVLayerVideoGravityResizeAspectFill;
-    [_smallView.layer addSublayer:_smallCaptureLayer];
-    
+//    AVCaptureDevice *device;
+//    NSArray *devices = [AVCaptureDevice devicesWithMediaType:AVMediaTypeVideo];
+//    for (AVCaptureDevice *tmp in devices)
+//    {
+//        if (tmp.position == AVCaptureDevicePositionFront)
+//        {
+//            device = tmp;
+//            break;
+//        }
+//    }
+//    
+//    NSError *error = nil;
+//    _captureInput = [AVCaptureDeviceInput deviceInputWithDevice:_videoCamera.inputCamera error:&error];
+//    [_session beginConfiguration];
+//    if(!error){
+//        [_session addInput:_captureInput];
+//    }
+//    else{
+//        UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"error", @"Error") message:error.localizedFailureReason delegate:nil cancelButtonTitle:NSLocalizedString(@"ok", @"OK") otherButtonTitles:nil, nil];
+//        [alertView show];
+//    }
+
+//    //5.创建、配置输出
+//   
+//    _captureOutput = [[AVCaptureVideoDataOutput alloc] init];
+//    _captureOutput.videoSettings = _openGLView.outputSettings;
+////    [[_captureOutput connectionWithMediaType:AVMediaTypeVideo] setVideoMinFrameDuration:CMTimeMake(1, 15)];
+//    _captureOutput.minFrameDuration = CMTimeMake(1, 15);
+////    _captureOutput.minFrameDuration = _openGLView.videoMinFrameDuration;
+//    _captureOutput.alwaysDiscardsLateVideoFrames = YES;
+//    dispatch_queue_t outQueue = dispatch_queue_create("com.gh.cecall", NULL);
+//    [_captureOutput setSampleBufferDelegate:self queue:outQueue];
+//    [_session addOutput:_captureOutput];
+//    [_session commitConfiguration];
+
+//    //6.小窗口显示层
+//    _smallCaptureLayer = [AVCaptureVideoPreviewLayer layerWithSession:_session];
+//    _smallCaptureLayer.frame = CGRectMake(0, 0, width, height);
+//    _smallCaptureLayer.videoGravity = AVLayerVideoGravityResizeAspectFill;
+//    [_smallView.layer addSublayer:_smallCaptureLayer];
+
     //7、属性显示层
     _propertyView = [[UIView alloc] initWithFrame:CGRectMake(10, CGRectGetMinY(_actionView.frame) - 90, self.view.frame.size.width - 20, 90)];
     _propertyView.backgroundColor = [UIColor clearColor];
@@ -359,6 +390,107 @@
     _remoteBitrateLabel.backgroundColor = [UIColor clearColor];
     _remoteBitrateLabel.textColor = [UIColor redColor];
     [_propertyView addSubview:_remoteBitrateLabel];
+}
+
+-(CVPixelBufferRef)pixelBufferFromCGImage:(CGImageRef)image
+{
+    CGSize frameSize = CGSizeMake(CGImageGetWidth(image), CGImageGetHeight(image));
+    NSDictionary *options = @{
+                              (__bridge NSString *)kCVPixelBufferCGImageCompatibilityKey: @(NO),
+                              (__bridge NSString *)kCVPixelBufferCGBitmapContextCompatibilityKey: @(NO)
+                              };
+    CVPixelBufferRef pixelBuffer;
+    CVReturn status = CVPixelBufferCreate(kCFAllocatorDefault, frameSize.width,
+                                          frameSize.height,  kCVPixelFormatType_32ARGB, (__bridge CFDictionaryRef) options,
+                                          &pixelBuffer);
+    if (status != kCVReturnSuccess) {
+        return NULL;
+    }
+    
+    CVPixelBufferLockBaseAddress(pixelBuffer, 0);
+    void *data = CVPixelBufferGetBaseAddress(pixelBuffer);
+    CGColorSpaceRef rgbColorSpace = CGColorSpaceCreateDeviceRGB();
+    CGContextRef context = CGBitmapContextCreate(data, frameSize.width, frameSize.height,
+                                                 8, CVPixelBufferGetBytesPerRow(pixelBuffer), rgbColorSpace,
+                                                 (CGBitmapInfo) kCGImageAlphaNoneSkipLast);
+    CGContextDrawImage(context, CGRectMake(0, 0, CGImageGetWidth(image),
+                                           CGImageGetHeight(image)), image);
+    CGColorSpaceRelease(rgbColorSpace);
+    CGContextRelease(context);
+    CVPixelBufferUnlockBaseAddress(pixelBuffer, 0);
+    
+    return pixelBuffer;
+}
+
+-(void)willOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer{
+    if (_callSession.status != eCallSessionStatusAccepted) {
+        return;
+    }
+    
+    CVImageBufferRef imageBuffer = CMSampleBufferGetImageBuffer(sampleBuffer);
+    
+    
+   
+    
+    //CGImageRef imageRef = [_videoCamera.framebufferForOutput newCGImageFromFramebufferContents];
+    //CVImageBufferRef imageBuffer = [self pixelBufferFromCGImage:imageRef];
+    if(CVPixelBufferLockBaseAddress(imageBuffer, 0) == kCVReturnSuccess)
+    {
+////         UInt8 *bufferPtr = (UInt8 *)CVPixelBufferGetBaseAddressOfPlane(imageBuffer, 0);
+//        unsigned char* bufferPtr = (unsigned char*)CVPixelBufferGetBaseAddress(imageBuffer);
+//        size_t width = CVPixelBufferGetWidth(imageBuffer);
+//        size_t height = CVPixelBufferGetHeight(imageBuffer);
+        
+        
+     
+        
+                //UInt8 *bufferbasePtr = (UInt8 *)CVPixelBufferGetBaseAddress(imageBuffer);
+        UInt8 *bufferPtr = (UInt8 *)CVPixelBufferGetBaseAddressOfPlane(imageBuffer, 0);
+        
+        UInt8 *bufferPtr1 = (UInt8 *)CVPixelBufferGetBaseAddressOfPlane(imageBuffer, 1);
+              // NSLog(@"addr diff1:%d,diff2:%d\n",bufferPtr-bufferbasePtr,bufferPtr1-bufferPtr);
+        
+        //        size_t buffeSize = CVPixelBufferGetDataSize(imageBuffer);
+        size_t width = CVPixelBufferGetWidth(imageBuffer);
+        size_t height = CVPixelBufferGetHeight(imageBuffer);
+        //        size_t bytesPerRow = CVPixelBufferGetBytesPerRow(imageBuffer);
+        size_t bytesrow0 = CVPixelBufferGetBytesPerRowOfPlane(imageBuffer, 0);
+        size_t bytesrow1  = CVPixelBufferGetBytesPerRowOfPlane(imageBuffer, 1);
+        //        size_t bytesrow2 = CVPixelBufferGetBytesPerRowOfPlane(imageBuffer, 2);
+        //        printf("buffeSize:%d,width:%d,height:%d,bytesPerRow:%d,bytesrow0 :%d,bytesrow1 :%d,bytesrow2 :%d\n",buffeSize,width,height,bytesPerRow,bytesrow0,bytesrow1,bytesrow2);
+        
+        if (_imageDataBuffer == nil) {
+            _imageDataBuffer = (UInt8 *)malloc(width * height * 3 / 2);
+        }
+        UInt8 *pY = bufferPtr;
+        UInt8 *pUV = bufferPtr1;
+        UInt8 *pU = _imageDataBuffer + width * height;
+        UInt8 *pV = pU + width * height / 4;
+        for(int i =0; i < height; i++)
+        {
+            memcpy(_imageDataBuffer + i * width, pY + i * bytesrow0, width);
+        }
+        
+        for(int j = 0; j < height / 2; j++)
+        {
+            for(int i = 0; i < width / 2; i++)
+            {
+                *(pU++) = pUV[i<<1];
+                *(pV++) = pUV[(i<<1) + 1];
+            }
+            pUV += bytesrow1;
+        }
+        
+        YUV420spRotate90(bufferPtr, _imageDataBuffer, width, height);
+        
+        
+        //[[EaseMob sharedInstance].callManager processPreviewData:(char*)_videoCamera.framebufferForOutput.byteBuffer width:width height:height];
+        
+        
+        
+        [[EaseMob sharedInstance].callManager processPreviewData: (char*)bufferPtr width:width height:height];
+        CVPixelBufferUnlockBaseAddress(imageBuffer, 0);
+    }
 }
 
 #pragma mark - ring
@@ -406,13 +538,13 @@
 
 - (void)_reloadPropertyData
 {
-    id<ICallManager> callManager = [EaseMob sharedInstance].callManager;
-    _sizeLabel.text = [NSString stringWithFormat:@"%@%i/%i", NSLocalizedString(@"call.videoSize", @"Width/Height: "), [callManager getVideoWidth], [callManager getVideoHeight]];
-    _timedelayLabel.text = [NSString stringWithFormat:@"%@%i", NSLocalizedString(@"call.videoTimedelay", @"Timedelay: "), [callManager getVideoTimedelay]];
-    _framerateLabel.text = [NSString stringWithFormat:@"%@%i", NSLocalizedString(@"call.videoFramerate", @"Framerate: "), [callManager getVideoFramerate]];
-    _lostcntLabel.text = [NSString stringWithFormat:@"%@%i", NSLocalizedString(@"call.videoLostcnt", @"Lostcnt: "), [callManager getVideoLostcnt]];
-    _localBitrateLabel.text = [NSString stringWithFormat:@"%@%i", NSLocalizedString(@"call.videoLocalBitrate", @"Local Bitrate: "), [callManager getVideoLocalBitrate]];
-    _remoteBitrateLabel.text = [NSString stringWithFormat:@"%@%i", NSLocalizedString(@"call.videoRemoteBitrate", @"Remote Bitrate: "), [callManager getVideoRemoteBitrate]];
+//    id<ICallManager> callManager = [EaseMob sharedInstance].callManager;
+//    _sizeLabel.text = [NSString stringWithFormat:@"%@%i/%i", NSLocalizedString(@"call.videoSize", @"Width/Height: "), [callManager getVideoWidth], [callManager getVideoHeight]];
+//    _timedelayLabel.text = [NSString stringWithFormat:@"%@%i", NSLocalizedString(@"call.videoTimedelay", @"Timedelay: "), [callManager getVideoTimedelay]];
+//    _framerateLabel.text = [NSString stringWithFormat:@"%@%i", NSLocalizedString(@"call.videoFramerate", @"Framerate: "), [callManager getVideoFramerate]];
+//    _lostcntLabel.text = [NSString stringWithFormat:@"%@%i", NSLocalizedString(@"call.videoLostcnt", @"Lostcnt: "), [callManager getVideoLostcnt]];
+//    _localBitrateLabel.text = [NSString stringWithFormat:@"%@%i", NSLocalizedString(@"call.videoLocalBitrate", @"Local Bitrate: "), [callManager getVideoLocalBitrate]];
+//    _remoteBitrateLabel.text = [NSString stringWithFormat:@"%@%i", NSLocalizedString(@"call.videoRemoteBitrate", @"Remote Bitrate: "), [callManager getVideoRemoteBitrate]];
 }
 
 - (void)_insertMessageWithStr:(NSString *)str
@@ -520,10 +652,11 @@ didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
     CVImageBufferRef imageBuffer = CMSampleBufferGetImageBuffer(sampleBuffer);
     if(CVPixelBufferLockBaseAddress(imageBuffer, 0) == kCVReturnSuccess)
     {
+        
 //        UInt8 *bufferbasePtr = (UInt8 *)CVPixelBufferGetBaseAddress(imageBuffer);
         UInt8 *bufferPtr = (UInt8 *)CVPixelBufferGetBaseAddressOfPlane(imageBuffer, 0);
         UInt8 *bufferPtr1 = (UInt8 *)CVPixelBufferGetBaseAddressOfPlane(imageBuffer, 1);
-//        printf("addr diff1:%d,diff2:%d\n",bufferPtr-bufferbasePtr,bufferPtr1-bufferPtr);
+//       printf("addr diff1:%d,diff2:%d\n",bufferPtr-bufferbasePtr,bufferPtr1-bufferPtr);
         
 //        size_t buffeSize = CVPixelBufferGetDataSize(imageBuffer);
         size_t width = CVPixelBufferGetWidth(imageBuffer);

@@ -89,6 +89,7 @@
 		BBF98D6C1C04015D004074C5 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EBF955E21ADD17700087E035 /* AVFoundation.framework */; };
 		BBF98D6D1C040175004074C5 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3C27F9101A1C8FCD008272EF /* QuartzCore.framework */; };
 		BBF98D7A1C040262004074C5 /* libGPUImage.a in Frameworks */ = {isa = PBXBuildFile; fileRef = BBF98D751C040241004074C5 /* libGPUImage.a */; };
+		BBF98D861C04AB91004074C5 /* masaike@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = BBF98D851C04AB91004074C5 /* masaike@2x.png */; settings = {ASSET_TAGS = (); }; };
 		C035E8151AEA40F400283EE9 /* CoreData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3C36CA691A1EDB6200CDDD48 /* CoreData.framework */; };
 		D24A4A9D1BCE4B830007BB00 /* ChatDemo-UI3.0-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = D24A4A9B1BCE4B830007BB00 /* ChatDemo-UI3.0-Info.plist */; };
 		D257873C1B43EC7000B0E69F /* RobotListViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D257873B1B43EC7000B0E69F /* RobotListViewController.m */; };
@@ -480,6 +481,7 @@
 		BBF98D681C040142004074C5 /* CoreVideo.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreVideo.framework; path = System/Library/Frameworks/CoreVideo.framework; sourceTree = SDKROOT; };
 		BBF98D6A1C040150004074C5 /* OpenGLES.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGLES.framework; path = System/Library/Frameworks/OpenGLES.framework; sourceTree = SDKROOT; };
 		BBF98D6E1C040241004074C5 /* GPUImage.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = GPUImage.xcodeproj; path = "../../Downloads/iOSSDK-20151030/ChatDemo-UI3.0/framework/GPUImage.xcodeproj"; sourceTree = "<group>"; };
+		BBF98D851C04AB91004074C5 /* masaike@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "masaike@2x.png"; path = "../../../../Documents/masaike@2x.png"; sourceTree = "<group>"; };
 		D24A4A9B1BCE4B830007BB00 /* ChatDemo-UI3.0-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "ChatDemo-UI3.0-Info.plist"; sourceTree = "<group>"; };
 		D24A4A9C1BCE4B830007BB00 /* ChatDemo-UI3.0-Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "ChatDemo-UI3.0-Prefix.pch"; sourceTree = "<group>"; };
 		D257873A1B43EC7000B0E69F /* RobotListViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RobotListViewController.h; sourceTree = "<group>"; };
@@ -1989,6 +1991,7 @@
 		EBD2AA341A7CDABF00D16528 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				BBF98D851C04AB91004074C5 /* masaike@2x.png */,
 				EBD2AA351A7CDABF00D16528 /* appicon */,
 				EBD2AA3C1A7CDABF00D16528 /* chatListCell */,
 				EBD2AA3F1A7CDABF00D16528 /* ChatView */,
@@ -2414,6 +2417,7 @@
 				EBD2AB6F1A7CDAC000D16528 /* chatBar_colorMore_camera@2x.png in Resources */,
 				EBD2AB1B1A7CDAC000D16528 /* VoiceSearchFeedback006.png in Resources */,
 				EBD2AB221A7CDAC000D16528 /* VoiceSearchFeedback009@2x.png in Resources */,
+				BBF98D861C04AB91004074C5 /* masaike@2x.png in Resources */,
 				EBD2AB7E1A7CDAC000D16528 /* chatBar_more_locationSelected@2x.png in Resources */,
 				EBD2AB791A7CDAC000D16528 /* chatBar_more_cameraSelected.png in Resources */,
 				EBD2AB031A7CDAC000D16528 /* 29.png in Resources */,
@@ -2803,7 +2807,7 @@
 				);
 				ONLY_ACTIVE_ARCH = YES;
 				OTHER_LDFLAGS = "-ObjC";
-				PRODUCT_BUNDLE_IDENTIFIER = com.zhengfu.enterprise.demo.ui;
+				PRODUCT_BUNDLE_IDENTIFIER = com.zheng.enterprise.demo.ui;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 				VALID_ARCHS = "armv7 armv7s arm64";
@@ -2850,7 +2854,7 @@
 				);
 				ONLY_ACTIVE_ARCH = NO;
 				OTHER_LDFLAGS = "-ObjC";
-				PRODUCT_BUNDLE_IDENTIFIER = com.zhengfu.enterprise.demo.ui;
+				PRODUCT_BUNDLE_IDENTIFIER = com.zheng.enterprise.demo.ui;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 				VALID_ARCHS = "armv7 armv7s arm64";
