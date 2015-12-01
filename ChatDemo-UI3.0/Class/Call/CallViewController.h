@@ -60,6 +60,9 @@ static CTCallCenter *g_callCenter;
     GPUImageOutput<GPUImageInput>* _filter;
     UIImageView* _maImage;
     BOOL _isModify;
+    NSTimer* _runTime;
+    double _fractionOfAPixel;
+    double _fractionCount;
     
 }
 @property(strong, nonatomic) GPUImageRawDataOutput* gpuImageDataOutput;

@@ -75,7 +75,8 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
-    
+    _fractionOfAPixel = 0.08;
+    _fractionCount = _fractionOfAPixel / 60;
     _isModify = NO;
     
     [self _setupSubviews];
@@ -275,7 +276,7 @@
     
     
     //2.小窗口视图
-    CGFloat width = 150;
+    CGFloat width = 158;
     CGFloat height = _openGLView.frame.size.height / _openGLView.frame.size.width * width;
     
     
@@ -289,7 +290,8 @@
     //
     //    [self.view addSubview:_maImage];
     
-    _gpuView = [[GPUImageView alloc] initWithFrame:CGRectMake(self.view.frame.size.width - 155, CGRectGetMaxY(_statusLabel.frame), width, 200)];
+    _gpuView = [[GPUImageView alloc] initWithFrame:CGRectMake(self.view.frame.size.width - 160, CGRectGetMaxY(_statusLabel.frame), width, 210)];
+    _gpuView.backgroundColor = [UIColor blackColor];
     [self.view addSubview:_gpuView];
     
     _videoCamera = [[GPUImageVideoCamera alloc] initWithSessionPreset:AVCaptureSessionPreset640x480 cameraPosition:AVCaptureDevicePositionFront];
@@ -312,7 +314,7 @@
         
     }];
     [_filter addTarget: self.gpuImageDataOutput];
-    
+    [(GPUImagePixellateFilter*)_filter setFractionalWidthOfAPixel:_fractionOfAPixel];
     
     //3.创建会话层
     //    _session = [[AVCaptureSession alloc] init];
@@ -808,6 +810,14 @@ didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
     }
 }
 
+-(void)processVideoCover:(NSTimer *)theTimer{
+    _fractionOfAPixel -= _fractionCount;
+    [(GPUImagePixellateFilter*)_filter setFractionalWidthOfAPixel:_fractionOfAPixel];
+    if (_fractionOfAPixel <= 0) {
+        [_runTime invalidate];
+    }
+    
+}
 
 #pragma mark - ICallManagerDelegate
 
@@ -818,7 +828,7 @@ didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
     if(![_callSession.sessionId isEqualToString:callSession.sessionId]){
         return;
     }
-    
+
     [self hideHud];
     [self _stopRing];
     if(error){
@@ -852,6 +862,9 @@ didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
     }
     else if (callSession.status == eCallSessionStatusAccepted)
     {
+        
+        _runTime = [NSTimer scheduledTimerWithTimeInterval:1.0 target:self selector:@selector(processVideoCover:) userInfo:nil repeats:YES];
+        
         if (callSession.connectType == eCallConnectTypeRelay) {
             _statusLabel.text = NSLocalizedString(@"call.speak.relay", @"Can speak...Relay");
         }
