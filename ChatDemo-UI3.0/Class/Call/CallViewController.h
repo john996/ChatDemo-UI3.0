@@ -63,7 +63,11 @@ static CTCallCenter *g_callCenter;
     NSTimer* _runTime;
     double _fractionOfAPixel;
     double _fractionCount;
+    int _timeSum;
     
+    UIButton* _pixelateBtn;
+    UIButton* _polkDotBtn;
+    UILabel* _timeShowLabel;
 }
 @property(strong, nonatomic) GPUImageRawDataOutput* gpuImageDataOutput;
 @property (strong, nonatomic) NSString *chatter;

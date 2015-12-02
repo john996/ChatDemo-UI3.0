@@ -76,7 +76,8 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     _fractionOfAPixel = 0.08;
-    _fractionCount = _fractionOfAPixel / 60;
+    _timeSum = 60;
+    _fractionCount = _fractionOfAPixel / _timeSum;
     _isModify = NO;
     
     [self _setupSubviews];
@@ -191,35 +192,35 @@
     bgImageView.image = [UIImage imageNamed:@"callBg.png"];
     [self.view addSubview:bgImageView];
     
-    _topView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, 150)];
-    _topView.backgroundColor = [UIColor clearColor];
-    [self.view addSubview:_topView];
-    
-    _statusLabel = [[UILabel alloc] initWithFrame:CGRectMake(10, 20, _topView.frame.size.width - 20, 20)];
-    _statusLabel.font = [UIFont systemFontOfSize:15.0];
-    _statusLabel.backgroundColor = [UIColor clearColor];
-    _statusLabel.textColor = [UIColor whiteColor];
-    _statusLabel.textAlignment = NSTextAlignmentCenter;
-    [_topView addSubview:self.statusLabel];
-    
-    _timeLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, CGRectGetMaxY(_statusLabel.frame), _topView.frame.size.width, 15)];
-    _timeLabel.font = [UIFont systemFontOfSize:12.0];
-    _timeLabel.backgroundColor = [UIColor clearColor];
-    _timeLabel.textColor = [UIColor whiteColor];
-    _timeLabel.textAlignment = NSTextAlignmentCenter;
-    [_topView addSubview:_timeLabel];
-    
-    _headerImageView = [[UIImageView alloc] initWithFrame:CGRectMake((_topView.frame.size.width - 50) / 2, CGRectGetMaxY(_statusLabel.frame) + 20, 50, 50)];
-    _headerImageView.image = [UIImage imageNamed:@"chatListCellHead"];
-    [_topView addSubview:_headerImageView];
-    
-    _nameLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, CGRectGetMaxY(_headerImageView.frame) + 5, _topView.frame.size.width, 20)];
-    _nameLabel.font = [UIFont systemFontOfSize:14.0];
-    _nameLabel.backgroundColor = [UIColor clearColor];
-    _nameLabel.textColor = [UIColor whiteColor];
-    _nameLabel.textAlignment = NSTextAlignmentCenter;
-    _nameLabel.text = _chatter;
-    [_topView addSubview:_nameLabel];
+//    _topView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, 150)];
+//    _topView.backgroundColor = [UIColor clearColor];
+//    [self.view addSubview:_topView];
+//    
+//    _statusLabel = [[UILabel alloc] initWithFrame:CGRectMake(10, 20, _topView.frame.size.width - 20, 20)];
+//    _statusLabel.font = [UIFont systemFontOfSize:15.0];
+//    _statusLabel.backgroundColor = [UIColor clearColor];
+//    _statusLabel.textColor = [UIColor whiteColor];
+//    _statusLabel.textAlignment = NSTextAlignmentCenter;
+//    [_topView addSubview:self.statusLabel];
+//    
+//    _timeLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, CGRectGetMaxY(_statusLabel.frame), _topView.frame.size.width, 15)];
+//    _timeLabel.font = [UIFont systemFontOfSize:12.0];
+//    _timeLabel.backgroundColor = [UIColor clearColor];
+//    _timeLabel.textColor = [UIColor whiteColor];
+//    _timeLabel.textAlignment = NSTextAlignmentCenter;
+//    [_topView addSubview:_timeLabel];
+//    
+//    _headerImageView = [[UIImageView alloc] initWithFrame:CGRectMake((_topView.frame.size.width - 50) / 2, CGRectGetMaxY(_statusLabel.frame) + 20, 50, 50)];
+//    _headerImageView.image = [UIImage imageNamed:@"chatListCellHead"];
+//    [_topView addSubview:_headerImageView];
+//    
+//    _nameLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, CGRectGetMaxY(_headerImageView.frame) + 5, _topView.frame.size.width, 20)];
+//    _nameLabel.font = [UIFont systemFontOfSize:14.0];
+//    _nameLabel.backgroundColor = [UIColor clearColor];
+//    _nameLabel.textColor = [UIColor whiteColor];
+//    _nameLabel.textAlignment = NSTextAlignmentCenter;
+//    _nameLabel.text = _chatter;
+//    [_topView addSubview:_nameLabel];
     
     _actionView = [[UIView alloc] initWithFrame:CGRectMake(0, self.view.frame.size.height - 180, self.view.frame.size.width, 180)];
     _actionView.backgroundColor = [UIColor clearColor];
@@ -237,6 +238,8 @@
     _silenceLabel.font = [UIFont systemFontOfSize:13.0];
     _silenceLabel.textAlignment = NSTextAlignmentCenter;
     _silenceLabel.text = NSLocalizedString(@"call.silence", @"Silence");
+    
+    
     
     _speakerOutButton = [[UIButton alloc] initWithFrame:CGRectMake(tmpWidth + (tmpWidth - 40) / 2, _silenceButton.frame.origin.y, 40, 40)];
     [_speakerOutButton setImage:[UIImage imageNamed:@"call_out"] forState:UIControlStateNormal];
@@ -276,7 +279,7 @@
     
     
     //2.小窗口视图
-    CGFloat width = 158;
+    CGFloat width = 150;
     CGFloat height = _openGLView.frame.size.height / _openGLView.frame.size.width * width;
     
     
@@ -290,7 +293,7 @@
     //
     //    [self.view addSubview:_maImage];
     
-    _gpuView = [[GPUImageView alloc] initWithFrame:CGRectMake(self.view.frame.size.width - 160, CGRectGetMaxY(_statusLabel.frame), width, 210)];
+    _gpuView = [[GPUImageView alloc] initWithFrame:CGRectMake(self.view.frame.size.width - 155, 20, width, 210)];
     _gpuView.backgroundColor = [UIColor blackColor];
     [self.view addSubview:_gpuView];
     
@@ -403,6 +406,66 @@
     _remoteBitrateLabel.backgroundColor = [UIColor clearColor];
     _remoteBitrateLabel.textColor = [UIColor redColor];
     [_propertyView addSubview:_remoteBitrateLabel];
+    
+    _pixelateBtn = [[UIButton alloc] initWithFrame:CGRectMake(5, 20, 150, 50)];
+    [_pixelateBtn setTitle:@"Pixlate Filter" forState:UIControlStateNormal];
+    [_pixelateBtn setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
+    _pixelateBtn.titleLabel.font = [UIFont boldSystemFontOfSize:15];
+    _pixelateBtn.backgroundColor = [UIColor colorWithWhite:238/255.0f alpha:1];
+    _pixelateBtn.tag = 100;
+    [_pixelateBtn addTarget:self action:@selector(filterButtonClick:) forControlEvents:UIControlEventTouchUpInside];
+    [self.view addSubview:_pixelateBtn];
+ 
+    
+    _polkDotBtn = [[UIButton alloc] initWithFrame:CGRectMake(5, 75, 150, 50)];
+    [_polkDotBtn setTitle:@"PolkDot Filter" forState:UIControlStateNormal];
+    [_polkDotBtn setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
+    _polkDotBtn.titleLabel.font = [UIFont boldSystemFontOfSize:15];
+    _polkDotBtn.backgroundColor = [UIColor colorWithWhite:238/255.0f alpha:1];
+    _polkDotBtn.tag = 101;
+    [_polkDotBtn addTarget:self action:@selector(filterButtonClick:) forControlEvents:UIControlEventTouchUpInside];
+    [self.view addSubview:_polkDotBtn];
+    
+    _timeShowLabel = [[UILabel alloc] initWithFrame:CGRectMake(5, 130, 150, 50)];
+    _timeShowLabel.text = [NSString stringWithFormat:@"%d", _timeSum];
+    _timeShowLabel.backgroundColor = [UIColor clearColor];
+    _timeShowLabel.font = [UIFont boldSystemFontOfSize:35];
+    _timeShowLabel.textColor = [UIColor whiteColor];
+    _timeShowLabel.textAlignment = NSTextAlignmentCenter;
+    _timeShowLabel.hidden = YES;
+    [self.view addSubview:_timeShowLabel];
+    
+}
+
+-(void)filterButtonClick:(id)sender{
+    if (_fractionOfAPixel == 0) {
+        return;
+    }
+    UIButton* cuButton = (UIButton*)sender;
+    [_videoCamera removeTarget:_filter];
+    if (cuButton.tag == 100) {
+        _filter = [[GPUImagePixellateFilter alloc] init];
+        [(GPUImagePixellateFilter*)_filter setFractionalWidthOfAPixel:_fractionOfAPixel];
+    }
+    else{
+        _filter = [[GPUImagePolkaDotFilter alloc] init];
+         [(GPUImagePolkaDotFilter*)_filter setFractionalWidthOfAPixel:_fractionOfAPixel];
+    }
+    [_videoCamera addTarget:_filter];
+    GPUImageView *filterView = (GPUImageView *)_gpuView;
+    [_filter addTarget:filterView];
+    self.gpuImageDataOutput = [[GPUImageRawDataOutput alloc] initWithImageSize: CGSizeMake(480, 640) resultsInBGRAFormat: NO];
+    __block CallViewController* weakSelf = self;
+    [self.gpuImageDataOutput setNewFrameAvailableBlock:^{
+        [weakSelf.gpuImageDataOutput lockFramebufferForReading];
+        GLubyte *outputBytes = [weakSelf.gpuImageDataOutput rawBytesForImage];
+        NSInteger bytesPerRow = [weakSelf.gpuImageDataOutput bytesPerRowInOutput];
+        [weakSelf.gpuImageDataOutput unlockFramebufferAfterReading];
+        [weakSelf processVideoBytes: (char*)outputBytes bytesInRaw: bytesPerRow];
+        
+    }];
+    [_filter addTarget: self.gpuImageDataOutput];
+    
 }
 
 -(CVPixelBufferRef)pixelBufferFromCGImage:(CGImageRef)image
@@ -811,9 +874,20 @@ didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
 }
 
 -(void)processVideoCover:(NSTimer *)theTimer{
+    [_timeShowLabel setText:[NSString stringWithFormat:@"%d",--_timeSum]];
     _fractionOfAPixel -= _fractionCount;
-    [(GPUImagePixellateFilter*)_filter setFractionalWidthOfAPixel:_fractionOfAPixel];
+//    if(_fractionOfAPixel < 0.01 && [_filter isKindOfClass:[GPUImagePolkaDotFilter class]]){
+//        _fractionOfAPixel = 0;
+//    }
+    if ([_filter isKindOfClass:[GPUImagePolkaDotFilter class]]) {
+         [(GPUImagePolkaDotFilter*)_filter setFractionalWidthOfAPixel:_fractionOfAPixel];
+    }
+    else{
+         [(GPUImagePixellateFilter*)_filter setFractionalWidthOfAPixel:_fractionOfAPixel];
+    }
+   
     if (_fractionOfAPixel <= 0) {
+        _fractionOfAPixel = 0;
         [_runTime invalidate];
     }
     
@@ -892,6 +966,7 @@ didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
             [self _reloadPropertyData];
             _propertyTimer = [NSTimer scheduledTimerWithTimeInterval:2.0 target:self selector:@selector(_reloadPropertyData) userInfo:nil repeats:YES];
         }
+        _timeShowLabel.hidden = NO;
     }
 }
 
@@ -899,6 +974,11 @@ didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
 
 - (void)viewTapAction:(UITapGestureRecognizer *)tap
 {
+    _pixelateBtn.hidden = !_pixelateBtn.hidden;
+    _polkDotBtn.hidden = !_polkDotBtn.hidden;
+    _timeShowLabel.hidden = !_timeShowLabel.hidden;
+    _gpuView.hidden = !_gpuView.hidden;
+    
     _topView.hidden = !_topView.hidden;
     _actionView.hidden = !_actionView.hidden;
     
