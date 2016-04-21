@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<VariablesViewState
+   version = "1.0">
+   <ContextStates>
+      <ContextState
+         contextName = "-[EaseChatToolbar connection:didReceiveData:]:EaseChatToolbar.m">
+         <PersistentStrings>
+            <PersistentString
+               value = "self.dataString.length">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
+         contextName = "-[SnappViewController webView:shouldStartLoadWithRequest:navigationType:]:SnappViewController.m">
+         <PersistentStrings>
+            <PersistentString
+               value = "linkUrl">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
+         contextName = "-[EaseChatToolbar connection:didReceiveResponse:]:EaseChatToolbar.m">
+         <PersistentStrings>
+            <PersistentString
+               value = "self.dataString">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
+         contextName = "-[EaseChatToolbar textViewDidChange:]:EaseChatToolbar.m">
+         <PersistentStrings>
+            <PersistentString
+               value = "_inputTextView.text">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
+         contextName = "-[EaseChatToolbar connectionDidFinishLoading:]:EaseChatToolbar.m">
+         <PersistentStrings>
+            <PersistentString
+               value = "self.dataString">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+   </ContextStates>
+</VariablesViewState>
